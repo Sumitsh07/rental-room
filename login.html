@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — बिहार किरायाघर</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="login.css"/>
+</head>
+<body>
+
+<div class="container">
+  <div class="logo"><span>🏠</span>बिहार किरायाघर</div>
+  <div class="subtitle">Bihar का अपना किराया घर platform</div>
+
+  <!-- Role Selector -->
+  <div class="role-selector">
+    <div class="role-btn active" id="roleUser" onclick="selectRole('user')">
+      <span class="icon">👤</span>
+      <div class="label">किरायेदार</div>
+      <div class="desc">कमरा ढूंढना है</div>
+    </div>
+    <div class="role-btn" id="roleMalik" onclick="selectRole('malik')">
+      <span class="icon">🏠</span>
+      <div class="label">मकान मालिक</div>
+      <div class="desc">कमरा देना है</div>
+    </div>
+  </div>
+
+  <!-- Login / Signup Tabs -->
+  <div class="tabs">
+    <button class="tab active" id="tabLogin" onclick="switchTab('login')">Login</button>
+    <button class="tab" id="tabSignup" onclick="switchTab('signup')">नया Account</button>
+  </div>
+
+  <!-- Login Form -->
+  <div id="loginForm">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="example@gmail.com"/>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="••••••••"/>
+    </div>
+    <button class="btn-main" id="loginBtn" onclick="doLogin()">🔐 Login करें</button>
+  </div>
+
+  <!-- Signup Form -->
+  <div id="signupForm" style="display:none">
+    <div class="form-group">
+      <label>पूरा नाम</label>
+      <input type="text" id="signupName" placeholder="राम कुमार"/>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="signupEmail" placeholder="example@gmail.com"/>
+    </div>
+    <div class="form-group">
+      <label>Password (कम से कम 6 अक्षर)</label>
+      <input type="password" id="signupPass" placeholder="••••••••"/>
+    </div>
+    <button class="btn-main" id="signupBtn" onclick="doSignup()">✅ Account बनाएं</button>
+  </div>
+
+  <div class="msg" id="authMsg"></div>
+</div>
+
+<script type="module" src="login.js"></script>
+</body>
+</html>

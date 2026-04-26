@@ -1,0 +1,30 @@
+/* login.css */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans Devanagari',sans-serif;background:linear-gradient(135deg,#fff8ee,#ffe5c8);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.container{background:white;border-radius:24px;padding:36px 32px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(255,107,0,0.15)}
+.logo{text-align:center;font-family:'Baloo 2',cursive;font-size:26px;font-weight:800;color:#FF6B00;margin-bottom:6px}
+.logo span{font-size:40px;display:block;margin-bottom:4px}
+.subtitle{text-align:center;color:#b05500;font-size:13px;margin-bottom:28px}
+.role-selector{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.role-btn{padding:16px 12px;border:2px solid #ddd;border-radius:16px;cursor:pointer;text-align:center;transition:all 0.2s;background:white}
+.role-btn:hover{border-color:#FF6B00;background:#fff8ee}
+.role-btn.active{border-color:#FF6B00;background:#fff3e0}
+.role-btn .icon{font-size:32px;display:block;margin-bottom:6px}
+.role-btn .label{font-size:13px;font-weight:700;color:#333}
+.role-btn .desc{font-size:11px;color:#888;margin-top:2px}
+.tabs{display:flex;background:#f5f5f5;border-radius:12px;padding:4px;margin-bottom:20px}
+.tab{flex:1;padding:10px;text-align:center;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:#888;border:none;background:none;font-family:'Noto Sans Devanagari',sans-serif}
+.tab.active{background:white;color:#FF6B00;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;color:#555;margin-bottom:5px;font-weight:600}
+.form-group input{width:100%;padding:12px 14px;border:1.5px solid #ddd;border-radius:10px;font-size:14px;font-family:'Noto Sans Devanagari',sans-serif;outline:none;transition:border-color 0.2s}
+.form-group input:focus{border-color:#FF6B00}
+.btn-main{width:100%;background:#FF6B00;color:white;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans Devanagari',sans-serif;margin-top:4px;transition:background 0.2s}
+.btn-main:hover{background:#e04e00}
+.btn-main:disabled{background:#ffb570;cursor:not-allowed}
+.msg{text-align:center;font-size:12px;margin-top:12px;min-height:18px;padding:8px;border-radius:8px}
+.msg.error{background:#ffebee;color:#c62828}
+.msg.success{background:#e8f5e9;color:#2e7d32}
+.divider{text-align:center;color:#bbb;font-size:12px;margin:16px 0;position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:#eee}
+.divider::before{left:0} .divider::after{right:0}

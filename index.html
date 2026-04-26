@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>बिहार किराया घर — Bihar Room Rental</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+      <rect width="36" height="36" rx="10" fill="white" fill-opacity="0.15"/>
+      <path d="M18 6L5 16h3v13h8v-8h4v8h8V16h3L18 6z" fill="white"/>
+      <circle cx="25" cy="11" r="4" fill="#FFD580"/>
+      <path d="M24 11h2M25 10v2" stroke="#FF6B00" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+    बिहार किरायाघर
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div id="userInfo"></div>
+    <button class="btn-post" id="addRoomBtn" onclick="openModal()" style="display:none">+ कमरा डालें</button>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>Bihar में <em>किराये का कमरा</em> खोजें</h1>
+  <p>Patna · Gaya · Muzaffarpur · Bhagalpur और पूरे Bihar में</p>
+  <div style="display:flex;justify-content:center;gap:24px;margin:20px auto 24px;flex-wrap:wrap;max-width:500px;">
+    <div style="background:white;border-radius:14px;padding:14px 28px;box-shadow:0 2px 12px rgba(255,107,0,0.12);display:flex;align-items:center;gap:10px;min-width:180px;justify-content:center;">
+      <span style="font-size:22px;">👥</span>
+      <div>
+        <div style="font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;color:#FF6B00;" id="memberCount">...</div>
+        <div style="font-size:11px;color:#b05500;">Members joined</div>
+      </div>
+    </div>
+    <div style="background:white;border-radius:14px;padding:14px 28px;box-shadow:0 2px 12px rgba(255,107,0,0.12);display:flex;align-items:center;gap:10px;min-width:180px;justify-content:center;">
+      <span style="font-size:22px;">🏠</span>
+      <div>
+        <div style="font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;color:#FF6B00;" id="roomCount">...</div>
+        <div style="font-size:11px;color:#b05500;">Rooms listed</div>
+      </div>
+    </div>
+  </div>
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <input type="text" id="searchInput" placeholder="जगह, landmark या शहर लिखें..." />
+      <button class="loc-btn" onclick="getUserLocation()">📍</button>
+    </div>
+    <button class="btn-search" onclick="searchRooms()">🔍 खोजें</button>
+  </div>
+  <div class="location-hint" id="locationHint">📍 बटन दबाएं — आपकी location auto-fill हो जाएगी</div>
+</div>
+
+<div class="filters">
+  <button class="filter-chip active" onclick="filterBy('all', this)">🏠 सभी</button>
+  <button class="filter-chip" onclick="filterBy('single', this)">🛏 Single Room</button>
+  <button class="filter-chip" onclick="filterBy('double', this)">🛏🛏 Double Room</button>
+  <button class="filter-chip" onclick="filterBy('flat', this)">🏢 Flat</button>
+  <button class="filter-chip" onclick="filterBy('pg', this)">👨‍🎓 PG</button>
+  <button class="filter-chip" onclick="filterBy('furnished', this)">🪑 Furnished Room</button>
+<button class="filter-chip" onclick="filterBy('hostel', this)">🏠 Hostel</button>
+</div>
+
+<div class="main-layout">
+  <div class="listings-panel">
+    <div class="listings-header">
+      <div>
+        <strong id="listingCount">...</strong>
+        <span class="listings-count"> कमरे मिले</span>
+      </div>
+    </div>
+    <div id="roomList">
+      <!-- Skeleton Cards -->
+      <div class="skeleton-card"><div class="skel" style="height:160px;margin-bottom:0;border-radius:0"></div><div style="padding:14px 16px"><div class="skel" style="height:16px;width:70%;margin-bottom:10px"></div><div class="skel" style="height:12px;width:50%;margin-bottom:10px"></div><div style="display:flex;gap:8px;margin-bottom:10px"><div class="skel" style="height:24px;width:60px"></div><div class="skel" style="height:24px;width:60px"></div></div><div class="skel" style="height:20px;width:40%"></div></div></div>
+      <div class="skeleton-card"><div class="skel" style="height:160px;margin-bottom:0;border-radius:0"></div><div style="padding:14px 16px"><div class="skel" style="height:16px;width:70%;margin-bottom:10px"></div><div class="skel" style="height:12px;width:50%;margin-bottom:10px"></div><div style="display:flex;gap:8px;margin-bottom:10px"><div class="skel" style="height:24px;width:60px"></div><div class="skel" style="height:24px;width:60px"></div></div><div class="skel" style="height:20px;width:40%"></div></div></div>
+      <div class="skeleton-card"><div class="skel" style="height:160px;margin-bottom:0;border-radius:0"></div><div style="padding:14px 16px"><div class="skel" style="height:16px;width:70%;margin-bottom:10px"></div><div class="skel" style="height:12px;width:50%;margin-bottom:10px"></div><div style="display:flex;gap:8px;margin-bottom:10px"><div class="skel" style="height:24px;width:60px"></div><div class="skel" style="height:24px;width:60px"></div></div><div class="skel" style="height:20px;width:40%"></div></div></div>
+    </div>
+  </div>
+  <div class="map-panel"><div id="map"></div></div>
+</div>
+
+<!-- Modal for Adding Room -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2>🏠 कमरा List करें</h2>
+    <p id="formLocationHint" style="font-size:12px;color:#b05500;margin-bottom:12px;min-height:18px;">📍 Modal खुलते ही location automatically लेगा</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>मकान मालिक का नाम *</label>
+        <input type="text" id="ownerName" placeholder="रामेश्वर प्रसाद" />
+      </div>
+      <div class="form-group">
+        <label>फोन नंबर *</label>
+        <input type="tel" id="phone" placeholder="9876543210" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>पता / Landmark *</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="address" placeholder="📍 नीचे बटन दबाएं या खुद लिखें..." style="flex:1" />
+        <button type="button" id="getLocBtn" onclick="getFormLocation()" style="background:#FF6B00;color:white;border:none;padding:11px 14px;border-radius:10px;font-size:18px;cursor:pointer;white-space:nowrap;flex-shrink:0;">📍</button>
+      </div>
+      <div id="addrHint" style="font-size:11px;color:#b05500;margin-top:4px;min-height:16px;"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>किराया (₹/माह) *</label>
+        <input type="number" id="rent" placeholder="4000" />
+      </div>
+      <div class="form-group">
+        <label>कमरे का प्रकार</label>
+        <select id="roomType">
+  <option value="single">🛏 Single Room</option>
+  <option value="double">🛏🛏 Double Room</option>
+  <option value="flat">🏢 Flat/Apartment</option>
+  <option value="pg">👨‍🎓 PG (Paying Guest)</option>
+  <option value="furnished">🪑 Fully Furnished Room</option>
+  <option value="hostel">🏠 Hostel / Dormitory</option>
+</select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>सुविधाएं (comma से लिखें)</label>
+      <textarea id="desc" rows="2" placeholder="WiFi, AC, attached bath, parking..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>कमरे की फोटो</label>
+      <div id="imgPreviewBox" style="display:none;margin-bottom:8px;">
+        <img id="imgPreview" style="width:100%;height:160px;object-fit:cover;border-radius:10px;"/>
+      </div>
+      <label for="roomImg" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border:2px dashed #ffb570;border-radius:12px;cursor:pointer;background:#fff8ee;color:#b05500;font-size:13px;">
+        📷 फोटो चुनें (optional)
+        <input type="file" id="roomImg" accept="image/*" style="display:none" onchange="previewImg(this)" />
+      </label>
+      <div id="imgHint" style="font-size:11px;color:#b05500;margin-top:4px;"></div>
+    </div>
+    <div class="form-group">
+      <label>शहर</label>
+      <select id="city">
+  <option>Patna</option>
+  <option>Gaya</option>
+  <option>Muzaffarpur</option>
+  <option>Bhagalpur</option>
+  <option>Darbhanga</option>
+  <option>Ara</option>
+  <option>Begusarai</option>
+  <option>Purnia</option>
+  <option>Nalanda</option>
+  <option>Vaishali</option>
+  <option>Saran</option>
+  <option>Siwan</option>
+  <option>Gopalganj</option>
+  <option>Motihari</option>
+  <option>Bettiah</option>
+  <option>Sitamarhi</option>
+  <option>Madhubani</option>
+  <option>Samastipur</option>
+  <option>Munger</option>
+  <option>Lakhisarai</option>
+  <option>Sheikhpura</option>
+  <option>Nawada</option>
+  <option>Aurangabad</option>
+  <option>Kaimur</option>
+  <option>Rohtas</option>
+  <option>Buxar</option>
+  <option>Jehanabad</option>
+  <option>Arwal</option>
+  <option>Supaul</option>
+  <option>Madhepura</option>
+  <option>Saharsa</option>
+  <option>Khagaria</option>
+  <option>Kishanganj</option>
+  <option>Katihar</option>
+  <option>Araria</option>
+  <option>Sheohar</option>
+  <option>Jamui</option>
+  <option>Banka</option>
+</select>
+    </div>
+    <button class="btn-submit" onclick="submitListing()">✅ List कराएं</button>
+  </div>
+</div>
+
+<!-- AI CHATBOT -->
+<div id="chatWidget" style="position:fixed;bottom:24px;right:24px;z-index:9999;font-family:'Noto Sans Devanagari',sans-serif;">
+  <button id="chatToggleBtn" onclick="toggleChat()" style="width:60px;height:60px;border-radius:50%;background:#FF6B00;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(255,107,0,0.4);font-size:26px;color:white;display:flex;align-items:center;justify-content:center;">
+    💬
+  </button>
+  <div id="chatBox" style="display:none;position:absolute;bottom:70px;right:0;width:320px;background:white;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.15);overflow:hidden;border:1px solid #ffe0c0;">
+    <div style="background:linear-gradient(135deg,#FF6B00,#c94800);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="color:white;font-weight:700;font-size:14px;">🏠 बिहार किरायाघर</div>
+        <div style="color:#ffe0c0;font-size:11px;">कोई भी सवाल पूछें</div>
+      </div>
+      <button onclick="toggleChat()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;">✕</button>
+    </div>
+    <div id="chatMessages" style="height:300px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#fff8ee;">
+      <div style="background:white;padding:10px 14px;border-radius:14px 14px 14px 4px;font-size:13px;color:#1a0a00;max-width:85%;box-shadow:0 1px 4px rgba(0,0,0,0.08);line-height:1.6;">
+        नमस्ते! 🙏 मैं बिहार किरायाघर का assistant हूँ।<br/><br/>
+        आप मुझसे पूछ सकते हैं:<br/>
+        • कमरा कैसे ढूंढें<br/>
+        • किराया कितना होना चाहिए<br/>
+        • कमरा list कैसे करें<br/>
+        • संपर्क कैसे करें
+      </div>
+    </div>
+    <div id="quickBtns" style="padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap;background:#fff3e0;border-top:1px solid #ffe0c0;">
+      <button onclick="sendQuick('कमरा कैसे ढूंढें?')" style="background:white;border:1px solid #ffb570;color:#b05500;padding:5px 10px;border-radius:20px;font-size:11px;cursor:pointer;">कमरा कैसे ढूंढें?</button>
+      <button onclick="sendQuick('किराया कितना होना चाहिए?')" style="background:white;border:1px solid #ffb570;color:#b05500;padding:5px 10px;border-radius:20px;font-size:11px;cursor:pointer;">किराया कितना?</button>
+      <button onclick="sendQuick('कमरा list कैसे करें?')" style="background:white;border:1px solid #ffb570;color:#b05500;padding:5px 10px;border-radius:20px;font-size:11px;cursor:pointer;">List कैसे करें?</button>
+      <button onclick="sendQuick('संपर्क कैसे करें?')" style="background:white;border:1px solid #ffb570;color:#b05500;padding:5px 10px;border-radius:20px;font-size:11px;cursor:pointer;">संपर्क कैसे?</button>
+    </div>
+    <div style="padding:10px 12px;background:white;display:flex;gap:8px;border-top:1px solid #f0d8c0;">
+      <input id="chatInput" type="text" placeholder="सवाल लिखें..."
+        style="flex:1;padding:9px 12px;border:1.5px solid #ffb570;border-radius:20px;font-size:13px;font-family:inherit;outline:none;"
+        onkeydown="if(event.key==='Enter') sendChat()" />
+      <button onclick="sendChat()" style="background:#FF6B00;color:white;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;">➤</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>
